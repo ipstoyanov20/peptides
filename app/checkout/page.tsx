@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { useCart } from '@/contexts/CartContext';
-import { Truck, CreditCard, CheckCircle2 } from 'lucide-react';
+import { Truck, CreditCard, CheckCircle2, Trash2, Plus, Minus } from 'lucide-react';
 import Link from 'next/link';
 
 export default function CheckoutPage() {
-  const { items, total, clearCart } = useCart();
+  const { items, total, clearCart, updateQuantity, removeFromCart } = useCart();
   const [paymentMethod, setPaymentMethod] = useState<'econt' | 'stripe'>('econt');
   const [econtData, setEcontData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
@@ -125,7 +125,28 @@ export default function CheckoutPage() {
                   </div>
                   <div>
                     <h3 className="font-bold text-slate-700">{item.name}</h3>
-                    <p className="text-sm text-slate-500">Qty: {item.quantity}</p>
+                    <div className="flex items-center gap-2 mt-2">
+                      <button 
+                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                        className="w-7 h-7 flex items-center justify-center bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-md transition-colors"
+                      >
+                        <Minus className="w-3 h-3" />
+                      </button>
+                      <span className="text-sm font-semibold w-6 text-center">{item.quantity}</span>
+                      <button 
+                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                        className="w-7 h-7 flex items-center justify-center bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-md transition-colors"
+                      >
+                        <Plus className="w-3 h-3" />
+                      </button>
+                      <button 
+                        onClick={() => removeFromCart(item.id)}
+                        className="w-7 h-7 flex items-center justify-center bg-red-50 hover:bg-red-100 text-red-500 rounded-md transition-colors ml-2"
+                        title="Remove item"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
                 </div>
                 <div className="font-extrabold text-emerald-600">€{(item.price * item.quantity).toFixed(2)}</div>
